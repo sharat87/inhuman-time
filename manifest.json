@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Inhuman Time",
-	"version": "0.1",
+	"version": "0.2",
 	"description": "Changes human time displays to inhuman ones",
 	"icons": {
 		"48": "icons/icon-48.png",

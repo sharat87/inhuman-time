@@ -38,35 +38,35 @@ function getRelativeTime(t) {
 	let count = (Date.now() - t) / 1000
 
 	if (count < 60) {
-		return timeFormat.format(Math.round(count), "second")
+		return timeFormat.format(-Math.round(count), "second")
 	}
 	count /= 60
 
 	if (count < 60) {
-		return timeFormat.format(Math.round(count), "minute")
+		return timeFormat.format(-Math.round(count), "minute")
 	}
 	count /= 60
 
 	if (count < 24) {
-		return timeFormat.format(Math.round(count), "hour")
+		return timeFormat.format(-Math.round(count), "hour")
 	}
 	count /= 24
 
 	if (count < 7) {
-		return timeFormat.format(Math.round(count), "day")
+		return timeFormat.format(-Math.round(count), "day")
 	}
 	count /= 7
 
 	if (count < 4) {
-		return timeFormat.format(Math.round(count), "week")
+		return timeFormat.format(-Math.round(count), "week")
 	}
 	count /= 4
 
 	if (count < 12) {
-		return timeFormat.format(Math.round(count), "month")
+		return timeFormat.format(-Math.round(count), "month")
 	}
 	count /= 12
 
-	return timeFormat.format(Math.round(count), "year")
+	return timeFormat.format(-Math.round(count), "year")
 }
 
