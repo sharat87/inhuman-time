@@ -1,0 +1,17 @@
+{
+	"manifest_version": 3,
+	"name": "Inhuman Time",
+	"version": "0.1",
+	"description": "Changes human time displays to inhuman ones",
+	"icons": {
+		"48": "icons/icon-48.png",
+		"128": "icons/icon-128-96.png",
+		"512": "icons/icon-512.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://*.github.com/*"],
+			"js": ["content_script.js"]
+		}
+	]
+}
