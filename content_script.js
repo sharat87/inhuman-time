@@ -1,11 +1,13 @@
-const timeFormat = new Intl.RelativeTimeFormat("en", {
+const relativeTimeFormat = new Intl.RelativeTimeFormat("en", {
 	localeMatcher: "best fit",
 	numeric: "auto",
 })
 
-const mutationObserver = new MutationObserver(applyWrapped);
+const mutationObserver = new MutationObserver(applyWrapped)
+const timeSpans = []
 
 applyWrapped()
+setInterval(updateRelativeTimes, 60_000)
 
 function applyWrapped() {
 	try {
@@ -19,13 +21,15 @@ function apply() {
 	mutationObserver.disconnect()
 
 	for (const el of document.querySelectorAll("relative-time")) {
-		const actualTime = new Date(el.getAttribute("datetime"))
 		const span = document.createElement("span")
-		span.innerText = el.getAttribute("title") || actualTime.toLocaleString()
-		span.title = getRelativeTime(actualTime)
+		span.setAttribute("datetime", el.getAttribute("datetime"))
+		span.innerText = displayTime(timeFromElement(el))
 		span.style.textDecoration = "underline #888 dashed"
 		el.replaceWith(span)
+		timeSpans.push(span)
 	}
+
+	updateRelativeTimes()
 
 	mutationObserver.takeRecords()
 	mutationObserver.observe(document.body, {
@@ -34,39 +38,64 @@ function apply() {
 	})
 }
 
+function timeFromElement(el) {
+	return new Date(el.getAttribute("datetime"))
+}
+
+function displayTime(t /*: Date */) {
+	return t.toLocaleString(undefined, {
+		year: "numeric",
+		month: "short",
+		day: "numeric",
+		hour: "numeric",
+		minute: "numeric",
+	})
+}
+
+function updateRelativeTimes() {
+	for (let i = 0; i < timeSpans.length; i++) {
+		const span = timeSpans[i]
+		if (!document.body.contains(span)) {
+			timeSpans.splice(i--, 1)
+			continue
+		}
+		span.title = getRelativeTime(timeFromElement(span))
+	}
+}
+
 function getRelativeTime(t) {
 	let count = (Date.now() - t) / 1000
 
-	if (count < 60) {
-		return timeFormat.format(-Math.round(count), "second")
+	if (count < 40) {
+		return "a few seconds ago"
 	}
 	count /= 60
 
 	if (count < 60) {
-		return timeFormat.format(-Math.round(count), "minute")
+		return relativeTimeFormat.format(-Math.round(count), "minute")
 	}
 	count /= 60
 
 	if (count < 24) {
-		return timeFormat.format(-Math.round(count), "hour")
+		return relativeTimeFormat.format(-Math.round(count), "hour")
 	}
 	count /= 24
 
 	if (count < 7) {
-		return timeFormat.format(-Math.round(count), "day")
+		return relativeTimeFormat.format(-Math.round(count), "day")
 	}
 	count /= 7
 
 	if (count < 4) {
-		return timeFormat.format(-Math.round(count), "week")
+		return relativeTimeFormat.format(-Math.round(count), "week")
 	}
 	count /= 4
 
 	if (count < 12) {
-		return timeFormat.format(-Math.round(count), "month")
+		return relativeTimeFormat.format(-Math.round(count), "month")
 	}
 	count /= 12
 
-	return timeFormat.format(-Math.round(count), "year")
+	return relativeTimeFormat.format(-Math.round(count), "year")
 }
 
