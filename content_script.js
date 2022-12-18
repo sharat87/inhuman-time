@@ -26,6 +26,13 @@ function apply() {
 		span.innerText = displayTime(timeFromElement(el))
 		span.style.textDecoration = "underline #888 dashed"
 		el.replaceWith(span)
+		if (span.parentElement?.matches(".css-truncate-target")) {
+			// Times of events in an issue or PR.
+			span.parentElement.style.maxWidth = "none"
+		} else if (span.parentElement?.matches(".text-right[role=gridcell]")) {
+			// In the commit time column in file listing page.
+			span.parentElement.style.width = ""
+		}
 		timeSpans.push(span)
 	}
 
