@@ -10,21 +10,18 @@ applyWrapped()
 setInterval(updateRelativeTimes, 60_000)
 
 function applyWrapped() {
-	try {
-		apply()
-	} catch (e) {
-		console.error("Error loading inhuman-time", e)
-	}
+	(chrome || browser).storage.sync.get(["deco", "fmt"])
+		.then(apply)
 }
 
-function apply() {
+function apply({deco, fmt}) {
 	mutationObserver.disconnect()
 
 	for (const el of document.querySelectorAll("relative-time")) {
 		const span = document.createElement("span")
 		span.setAttribute("datetime", el.getAttribute("datetime"))
-		span.innerText = displayTime(timeFromElement(el))
-		span.style.textDecoration = "underline #888 dashed"
+		span.innerText = displayTime(timeFromElement(el), fmt)
+		span.style.textDecoration = deco === "d" ? "underline #888 dashed" : "none"
 		el.replaceWith(span)
 		if (span.parentElement?.matches(".css-truncate-target")) {
 			// Times of events in an issue or PR.
@@ -49,14 +46,44 @@ function timeFromElement(el) {
 	return new Date(el.getAttribute("datetime"))
 }
 
-function displayTime(t /*: Date */) {
-	return t.toLocaleString(undefined, {
-		year: "numeric",
-		month: "short",
-		day: "numeric",
-		hour: "numeric",
-		minute: "numeric",
+function displayTime(t /*: Date */, fmt) {
+	if (!fmt || fmt === "local") {
+		return t.toLocaleString(undefined, {
+			year: "numeric",
+			month: "short",
+			day: "numeric",
+			hour: "numeric",
+			minute: "numeric",
+		})
+	}
+
+	fmt.replaceAll(/Y+|M+|D+|H+|h+|m+|S+/g, (match) => {
+		switch(match) {
+			case "YYYY": return t.getFullYear()
+			case "YY": return t.getFullYear() % 100
+			case "MMMM": return t.toLocaleString(undefined, {month: "long"})
+			case "MMM": return t.toLocaleString(undefined, {month: "short"})
+			case "MM": return pad2(t.getMonth() + 1)
+			case "M": return t.getMonth() + 1
+			case "DDDD": return t.toLocaleString(undefined, {weekday: "long"})
+			case "DDD": return t.toLocaleString(undefined, {weekday: "short"})
+			case "DD": return pad2(t.getDate())
+			case "D": return t.getDate()
+			case "HH": return pad2(t.getHours())
+			case "H": return t.getHours()
+			case "hh": return pad2(t.getHours() % 12 || 12)
+			case "h": return t.getHours() % 12 || 12
+			case "mm": return pad2(t.getMinutes())
+			case "m": return t.getMinutes()
+			case "SS": return pad2(t.getSeconds())
+			case "S": return t.getSeconds()
+			default: return match
+		}
 	})
+}
+
+function pad2(n) {
+	return n < 10 ? "0" + n : n
 }
 
 function updateRelativeTimes() {

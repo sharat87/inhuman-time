@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<title>Options - Inhuman Time</title>
+<meta charset="utf-8">
+<body style="font-size: 1.1em">
+<form>
+	<p>
+		<span class="lbl">Decoration:</span>
+		<label>
+			<input type="radio" name="deco" value="n">
+			<span>None</span>
+		</label>
+		<label>
+			<input type="radio" name="deco" value="d">
+			<span>Dotted underline</span>
+		</label>
+	</p>
+	<p>
+		<label>
+			<span class="lbl">Date Format:</span>
+			<input name="fmt" style="font-family: monospace">
+		</label>
+	</p>
+</form>
+
+<details>
+	<summary style="cursor: pointer">Format Details</summary>
+	<p>To represent <code>2022-08-02T17:06:30Z</code>:</p>
+	<table>
+		<tr><th>Format</th><th>Result</th></tr>
+		<tr><td><code>YYYY</code></td><td><code>2022</code></td></tr>
+		<tr><td><code>YY</code></td><td><code>22</code></td></tr>
+		<tr><td><code>MMMM</code></td><td><code>August</code></td></tr>
+		<tr><td><code>MMM</code></td><td><code>Aug</code></td></tr>
+		<tr><td><code>MM</code></td><td><code>08</code></td></tr>
+		<tr><td><code>M</code></td><td><code>8</code></td></tr>
+		<tr><td><code>DDDD</code></td><td><code>Tuesday</code></td></tr>
+		<tr><td><code>DDD</code></td><td><code>Tue</code></td></tr>
+		<tr><td><code>DD</code></td><td><code>02</code></td></tr>
+		<tr><td><code>D</code></td><td><code>2</code></td></tr>
+		<tr><td><code>HH</code></td><td><code>17</code></td></tr>
+		<tr><td><code>H</code></td><td><code>17</code></td></tr>
+		<tr><td><code>hh</code></td><td><code>05</code></td></tr>
+		<tr><td><code>h</code></td><td><code>5</code></td></tr>
+		<tr><td><code>mm</code></td><td><code>06</code></td></tr>
+		<tr><td><code>m</code></td><td><code>6</code></td></tr>
+		<tr><td><code>SS</code></td><td><code>30</code></td></tr>
+		<tr><td><code>S</code></td><td><code>30</code></td></tr>
+	</table>
+	<p>Or you can set to "<code>local</code>", to use your browser's local date format.</p>
+</details>
+
+<script src="options.js"></script>
