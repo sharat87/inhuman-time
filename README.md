@@ -1,4 +1,4 @@
-# Inhuman Time
+# ![](https://github.com/sharat87/inhuman-time/raw/main/icons/icon-48.png) Inhuman Time
 
 This extension changes relative time displays like `3 days ago`, `20 minutes ago` etc. to display the actual full date
 and time.
