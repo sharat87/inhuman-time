@@ -3,6 +3,7 @@ const relativeTimeFormat = new Intl.RelativeTimeFormat("en", {
 	numeric: "auto",
 })
 
+const mutationObserver = new MutationObserver(applyWrapped)
 const timeSpans = []
 
 applyWrapped()
@@ -18,6 +19,8 @@ function applyWrapped() {
 }
 
 function apply({deco, fmt}) {
+	mutationObserver.disconnect()
+
 	for (const el of document.querySelectorAll("relative-time")) {
 		const span = document.createElement("span")
 		span.setAttribute("datetime", el.getAttribute("datetime"))
@@ -35,6 +38,12 @@ function apply({deco, fmt}) {
 	}
 
 	updateRelativeTimes()
+
+	mutationObserver.takeRecords()
+	mutationObserver.observe(document.body, {
+		childList: true,
+		subtree: true,
+	})
 }
 
 function timeFromElement(el) {
