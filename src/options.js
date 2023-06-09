@@ -8,12 +8,13 @@ main().catch((error) => console.log(error))
 async function main() {
 	await load()
 	form.addEventListener("change", save)
+	form.addEventListener("keypress", save)
 }
 
 async function load() {
 	const data = await browser.storage.sync.get(["deco", "fmt"])
 	form.deco.value = data.deco || "d"
-	form.fmt.value = data.fmt || "YYYY-MM-DD HH:mm"
+	form.fmt.value = data.fmt || ""
 }
 
 async function save() {
