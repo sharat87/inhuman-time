@@ -1,0 +1,9 @@
+span[datetime].deco-d {
+	text-decoration: underline #888 dashed;
+}
+
+#highlighted-line-menu-positioner span[datetime] {
+	font-size: .8em;
+	line-height: 1em;
+	display: inline-block;
+}

@@ -7,11 +7,7 @@ const mutationObserver = new MutationObserver(applyWrapped)
 const timeSpans = []
 
 applyWrapped()
-
-setInterval(() => {
-	applyWrapped()
-	updateRelativeTimes()
-}, 5000)
+setInterval(applyWrapped, 5000)
 
 function applyWrapped() {
 	(chrome || browser).storage.sync.get(["deco", "fmt"])
@@ -25,7 +21,8 @@ function apply({deco, fmt}) {
 		const span = document.createElement("span")
 		span.setAttribute("datetime", el.getAttribute("datetime"))
 		span.innerText = displayTime(timeFromElement(el), fmt)
-		span.style.textDecoration = deco === "d" ? "underline #888 dashed" : "none"
+		span.classList.add("deco-" + deco)
+		span.dataset.rghHeat = el.dataset.rghHeat
 		el.replaceWith(span)
 		if (span.parentElement?.matches(".css-truncate-target")) {
 			// Times of events in an issue or PR.
@@ -91,19 +88,31 @@ function pad2(n) {
 }
 
 function updateRelativeTimes() {
+	const secondsInADay = 24 * 60 * 60
+
 	for (let i = 0; i < timeSpans.length; i++) {
 		const span = timeSpans[i]
 		if (!document.body.contains(span)) {
 			timeSpans.splice(i--, 1)
 			continue
 		}
-		span.title = getRelativeTime(timeFromElement(span))
+
+		const seconds = (Date.now() - timeFromElement(span)) / 1000
+		span.title = getRelativeTime(seconds)
+
+		if (seconds < 2 * secondsInADay) {
+			span.dataset.rghHeat = "1"
+		} else if (seconds < 5 * secondsInADay) {
+			span.dataset.rghHeat = "2"
+		} else if (seconds < 10 * secondsInADay) {
+			span.dataset.rghHeat = "3"
+		} else {
+			delete span.dataset.rghHeat
+		}
 	}
 }
 
-function getRelativeTime(t) {
-	let count = (Date.now() - t) / 1000
-
+function getRelativeTime(count) {
 	if (count < 40) {
 		return "a few seconds ago"
 	}
